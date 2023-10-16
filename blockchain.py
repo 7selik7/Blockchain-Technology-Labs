@@ -23,17 +23,11 @@ class SYO_Blockchain(object):
 
         self.chain.append(block)
 
-    def syo_new_block(self, proof):
+    def syo_new_block(self):
         previous_block = self.syo_last_block
         previous_hash = self.syo_hash(previous_block)
 
-        block = {
-            'index': len(self.chain) + 1,
-            'timestamp': time.time(),
-            'transactions': self.current_transactions,
-            'proof': proof,
-            'previous_hash': previous_hash,
-        }
+        block = self.syo_proof_of_work(previous_hash)
 
         self.current_transactions = []
         self.chain.append(block)
@@ -47,17 +41,24 @@ class SYO_Blockchain(object):
             'amount': amount
         })
 
-    def syo_proof_of_work(self, last_proof):
+    def syo_proof_of_work(self, previous_hash):
         proof = 0
-        while self.syo_valid_proof(last_proof, proof) is False:
+        while True:
+            new_block = self.syo_find_block(proof, previous_hash)
+            if new_block:
+                return new_block
             proof += 1
-        return proof
 
-    @staticmethod
-    def syo_valid_proof(last_proof, proof):
-        guess = f'{last_proof}{proof}'.encode()
-        guess_hash = hashlib.sha256(guess).hexdigest()
-        return guess_hash.endswith("2004")
+    def syo_find_block(self, proof, previous_hash):
+        block = {
+            'index': len(self.chain) + 1,
+            'timestamp': time.time(),
+            'transactions': self.current_transactions,
+            'proof': proof,
+            'previous_hash': previous_hash,
+        }
+        guess_hash = self.syo_hash(block)
+        return block if guess_hash[-4:] == "2004" else None
 
     @staticmethod
     def syo_hash(block):
@@ -74,10 +75,9 @@ class SYO_Blockchain(object):
 
 my_blockchain = SYO_Blockchain()
 
-for _ in range(100):
-    new_proof = my_blockchain.syo_proof_of_work(my_blockchain.syo_last_block['proof'])
-    my_blockchain.syo_new_block(new_proof)
-    print(_)
+for _ in range(5):
+    my_blockchain.syo_new_transaction("sender1", "recipient1", 1)
+    new_block = my_blockchain.syo_new_block()
 
 blockchain_data = my_blockchain.chain
 
