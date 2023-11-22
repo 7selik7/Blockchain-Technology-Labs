@@ -73,15 +73,22 @@ class SYO_Blockchain(object):
             return None
 
 
-my_blockchain = SYO_Blockchain()
-
-for _ in range(5):
-    my_blockchain.syo_new_transaction("sender1", "recipient1", 1)
-    new_block = my_blockchain.syo_new_block()
-
-blockchain_data = my_blockchain.chain
-
-with open("blockchain_data.json", "w") as json_file:
-    json.dump(blockchain_data, json_file, indent=4)
+def syo_hash(block):
+    block_string = json.dumps(block, sort_keys=True).encode()
+    return hashlib.sha256(block_string).hexdigest()
 
 
+print(syo_hash({'proof': 23062004, 'id': 'f9e2b9c8-a95b-4a07-a116-5da7510e6165', 'timestamp': '2023-11-22 22:51:23',
+                'transactions': [],
+                'previous_hash': 'd36fc53db262cdc915a34e5a9b978503ac80dd423743819d3275bfbaff534843'}))
+
+# my_blockchain = SYO_Blockchain()
+#
+# for _ in range(5):
+#     my_blockchain.syo_new_transaction("sender1", "recipient1", 1)
+#     new_block = my_blockchain.syo_new_block()
+#
+# blockchain_data = my_blockchain.chain
+#
+# with open("blockchain_data.json", "w") as json_file:
+#     json.dump(blockchain_data, json_file, indent=4)
