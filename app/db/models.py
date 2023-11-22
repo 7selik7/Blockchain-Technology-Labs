@@ -15,6 +15,15 @@ class BlockDB(Base):
     proof = Column(BigInteger)
     previous_hash = Column(String)
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'timestamp': self.timestamp,
+            'transactions': self.transactions,
+            'proof': self.proof,
+            'previous_hash': self.previous_hash
+        }
+
 
 class TransactionDB(Base):
     __tablename__ = "transactions"

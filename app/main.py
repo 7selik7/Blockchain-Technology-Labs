@@ -6,7 +6,7 @@ from fastapi import FastAPI, HTTPException, Depends, Query
 
 from app.config import settings
 from app.db.connection import get_db
-from app.db.models import TransactionDB
+from app.db.models import TransactionDB, BlockDB
 from app.schemas.transaction_schema import Transaction
 from sqlalchemy.orm import Session
 
@@ -74,11 +74,12 @@ def mine_block(
     return {"message": "Block mined successfully", "block": new_block, "fee": total_fee}
 
 
-#
-#
-# @app.get("/chain")
-# def get_chain():
-#     return {"chain": my_blockchain.chain, "length": len(my_blockchain.chain)}
+
+@app.get("/chain")
+def get_chain(db: Session = Depends(get_db)):
+    blocks = (db.query(BlockDB).all())
+    my_blockchain = [block.to_dict() for block in blocks]
+    return {"chain": my_blockchain, "length": len(my_blockchain)}
 
 
 if __name__ == '__main__':
