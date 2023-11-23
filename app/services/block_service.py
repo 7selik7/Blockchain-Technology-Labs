@@ -15,9 +15,6 @@ class SYO_Blockchain:
         previous_block = self.syo_last_block
         previous_block = previous_block.__dict__
         previous_block.pop("_sa_instance_state", None)
-        # previous_block = self.block_db_to_dict(previous_block)
-        print("PREVIOS BLOCK", previous_block)
-        print(type(previous_block))
         previous_hash = self.syo_hash(previous_block)
 
         block = self.syo_proof_of_work(previous_hash)
@@ -56,17 +53,3 @@ class SYO_Blockchain:
     def syo_last_block(self):
         return self.db_session.query(BlockDB).order_by(desc(BlockDB.timestamp)).first()
 
-    # @staticmethod
-    # def block_db_to_dict(block_db):
-    #     block_dict = block_db.__dict__.copy()
-    #
-    #     block_dict.pop("_sa_instance_state", None)
-    #
-    #     for key, value in block_dict.items():
-    #         print(key, type(value), isinstance(value, datetime))
-    #         if isinstance(value, datetime):
-    #             block_dict[key] = value.strftime("%Y-%m-%d %H:%M:%S")
-    #         elif isinstance(value, uuid.UUID):
-    #             block_dict[key] = str(value)
-    #
-    #     return block_dict

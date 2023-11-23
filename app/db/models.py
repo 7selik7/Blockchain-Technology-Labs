@@ -42,3 +42,18 @@ class TransactionDB(Base):
             'recipient': self.recipient,
             'amount': self.amount
         }
+
+
+class UserDB(Base):
+    __tablename__ = "users"
+
+    id = Column(String, primary_key=True)
+    name = Column(String)
+    amount = Column(Float)
+
+
+class NodeDB(Base):
+    __tablename__ = "nodes"
+
+    id = Column(String, primary_key=True)
+    url = Column(String)
